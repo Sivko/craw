@@ -8,6 +8,7 @@ import { GamesRepository } from './games.repository';
 import { RoomsRepository } from '../rooms/rooms.repository';
 import { RedisStreamerService } from '../redis-streamer/redis-streamer.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { ChatService } from '../chat/chat.service';
 import { MatchResponse, MatchResponseDto } from './dto/match-response.dto';
 import { RoomStatus } from '../rooms/dto/room-response.dto';
 import { GuessWordDto } from './dto/guess-word.dto';
@@ -27,6 +28,7 @@ export class GamesService {
     private readonly roomsRepository: RoomsRepository,
     private readonly redisStreamer: RedisStreamerService,
     private readonly prisma: PrismaService,
+    private readonly chatService: ChatService,
   ) {}
 
   /**
@@ -83,6 +85,9 @@ export class GamesService {
 
     // Обновляем статус комнаты на playing
     await this.roomsRepository.updateStatus(roomId, RoomStatus.PLAYING);
+
+    // Очищаем историю чата при начале новой игры
+    await this.chatService.clearMessages(roomId);
 
     // Публикуем событие начала игры
     await this.redisStreamer.publishRoomUpdate({

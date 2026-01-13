@@ -9,6 +9,7 @@ import { RedisStreamerModule } from './redis-streamer/redis-streamer.module';
 import { AuthModule } from './auth/auth.module';
 import { RoomsModule } from './rooms/rooms.module';
 import { GamesModule } from './games/games.module';
+import { ChatModule } from './chat/chat.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Module({
@@ -23,6 +24,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     AuthModule,
     RoomsModule,
     GamesModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [
