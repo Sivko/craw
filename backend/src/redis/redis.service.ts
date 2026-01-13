@@ -9,8 +9,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   constructor(private configService: ConfigService) {}
 
   async onModuleInit() {
-    const host = this.configService.get<string>('REDIS_HOST', 'localhost');
-    const port = this.configService.get<number>('REDIS_PORT', 6379);
+    const host = this.configService.get<string>('REDIS_HOST') || 'localhost';
+    const port = this.configService.get<number>('REDIS_PORT') || 6379;
 
     this.client = new Redis({
       host,
@@ -48,7 +48,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     count?: number,
     block?: number,
   ): Promise<Array<[string, Array<[string, string[]]>]>> {
-    const args: any[] = [];
+    const args: (string | number)[] = [];
     if (count) args.push('COUNT', count);
     if (block !== undefined) args.push('BLOCK', block);
     args.push(
@@ -57,7 +57,9 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       ...streams.map((s) => s.id),
     );
 
-    return this.client.xread(...args);
+    return this.client.xread(
+      ...(args as Parameters<Redis['xread']>),
+    ) as Promise<Array<[string, Array<[string, string[]]>]>>;
   }
 
   async xgroup(
@@ -65,10 +67,16 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     stream: string,
     group: string,
     id?: string,
+    options?: { MKSTREAM?: boolean },
   ): Promise<string | number> {
-    const args: any[] = [command, stream, group];
+    const args: (string | number)[] = [command, stream, group];
     if (id) args.push(id);
-    return this.client.xgroup(...args);
+    if (options?.MKSTREAM) {
+      args.push('MKSTREAM');
+    }
+    return this.client.xgroup(
+      ...(args as Parameters<Redis['xgroup']>),
+    ) as Promise<string | number>;
   }
 
   async xreadgroup(
@@ -78,7 +86,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     count?: number,
     block?: number,
   ): Promise<Array<[string, Array<[string, string[]]>]>> {
-    const args: any[] = ['GROUP', group, consumer];
+    const args: (string | number)[] = ['GROUP', group, consumer];
     if (count) args.push('COUNT', count);
     if (block !== undefined) args.push('BLOCK', block);
     args.push(
@@ -87,6 +95,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       ...streams.map((s) => s.id),
     );
 
-    return this.client.xreadgroup(...args);
+    return this.client.xreadgroup(
+      ...(args as Parameters<Redis['xreadgroup']>),
+    ) as Promise<Array<[string, Array<[string, string[]]>]>>;
   }
 }
