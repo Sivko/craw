@@ -1,11 +1,4 @@
-import {
-  IsEnum,
-  IsInt,
-  IsNotEmpty,
-  IsOptional,
-  Max,
-  Min,
-} from 'class-validator';
+import { IsEnum, IsInt, IsNotEmpty, Max, Min } from 'class-validator';
 
 /**
  * Уровни сложности игры

@@ -129,7 +129,9 @@ export class AuthService {
   /**
    * Гостевой вход
    */
-  async authenticateGuest(guestAuthDto: GuestAuthDto): Promise<AuthResponseDto> {
+  async authenticateGuest(
+    guestAuthDto: GuestAuthDto,
+  ): Promise<AuthResponseDto> {
     // Создаем временного пользователя без telegramId
     const user = await this.prisma.user.create({
       data: {
