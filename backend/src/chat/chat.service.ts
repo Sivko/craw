@@ -38,9 +38,6 @@ export class ChatService {
     userId: string,
     dto: CreateMessageDto,
   ): Promise<MessageResponseDto> {
-    // Проверяем, что комната существует
-    const room = await this.roomsRepository.findById(roomId);
-
     // Проверяем, что пользователь является участником комнаты
     const isInRoom = await this.roomsRepository.isUserInRoom(roomId, userId);
     if (!isInRoom) {
