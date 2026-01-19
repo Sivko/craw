@@ -1,8 +1,0 @@
-/**
- * Конфигурация переменных окружения
- */
-export const env = {
-  apiUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
-  wsUrl: process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3001',
-  telegramBotName: process.env.NEXT_PUBLIC_TELEGRAM_BOT_NAME || '',
-} as const;
